@@ -1,22 +1,23 @@
 # Arquitectura
 
-Proyecto monolítico modular para la gestión de citas médicas.
+## Objetivo
 
-## Componentes
-- React + TypeScript: interfaz de paciente, recepción, médico y administración.
-- API interna TypeScript: autenticación, reservas, disponibilidad, cancelaciones e informes.
-- Neon PostgreSQL: persistencia de usuarios, pacientes, recursos, citas y auditoría.
-- Vercel: despliegue del frontend y de las funciones API.
+Clinicdev se organiza como un monorepo para separar la aplicación web, la API, los contratos compartidos, la persistencia, la infraestructura y la documentación.
 
-## Reglas centrales
-- Validar RUT por Módulo 11 antes de habilitar la reserva.
-- Validar de nuevo en la API antes de persistir.
-- Prevenir solapamientos de paciente, médico y sala.
-- Mantener auditoría de creación, modificación, cancelación y reasignación.
-- Usar roles admin, recepcion, medico y paciente.
+## Límites
 
-## Datos de demostración
-Solo se usarán datos ficticios: pacientes DEMO, médicos ficticios, 50 salas y especialidades codificadas.
+- `apps/web`: interfaz pública y áreas privadas; no contiene secretos ni acceso directo a la base de datos.
+- `apps/api`: API responsable de autenticación, autorización, validación, reglas de negocio y acceso a datos.
+- `packages/shared`: contratos, tipos y validaciones reutilizables que no contienen credenciales.
+- `packages/ui`: componentes visuales reutilizables.
+- `packages/config`: configuraciones compartidas de herramientas.
+- `database`: migraciones, semillas controladas y consultas operativas; no incluye datos clínicos ni credenciales.
+- `infrastructure`: configuración y documentación de despliegue por entorno.
 
 ## Seguridad
-Variables DATABASE_URL y JWT_SECRET se configurarán fuera del repositorio. No se subirán secretos ni información clínica real.
+
+Las variables sensibles se administran exclusivamente mediante los entornos seguros de cada proveedor. El navegador no debe conectarse directamente a la base de datos. Los datos de pacientes, credenciales y cualquier información clínica no se almacenan en el repositorio.
+
+## Migración
+
+La migración será incremental. En la primera etapa se crea esta estructura sin modificar la aplicación existente. Las etapas posteriores moverán el frontend, crearán la API mínima y extraerán módulos por dominio con verificación de compilación en cada entrega.
